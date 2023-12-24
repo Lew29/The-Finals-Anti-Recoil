@@ -1,7 +1,8 @@
 # The-Finals-Anti-Recoil
-**Maybe detected wouldn't run on main account.**
+**Maybe detected wouldn't run on main account.**\
+[UnknownCheats thread](https://www.unknowncheats.me/forum/other-fps-games/616379-finals-ahk-anti-recoil.html).
 ## How to run
-Open the "settings.ini" file using Notepad and set your sensitivity and FOV settings.\
+Open the "settings.ini" file using Notepad and set your sensitivity and FOV settings.
 Run "RunMe.ahk"
 ## Hotkeys
 TTS should tell you what is selected
