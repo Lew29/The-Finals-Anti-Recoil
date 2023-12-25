@@ -18,10 +18,10 @@ SendMode Input
 
 global UUID := "33f6cce189114748870d4fe1c2388b0e"
 
+RunAsAdmin()
+HideProcess()
 GoSub, iniLoad
 SetPattern()
-;RunAsAdmin()
-;HideProcess()
 
 global currentPattern := akmPattern
 global interval := 100
@@ -29,7 +29,7 @@ global interval := 100
 SetPattern() 
 {
     global akmPattern := LoadPattern("AKM.txt")
-    global fcarPattern
+    global fcarPattern := LoadPattern("FCAR.txt")
     global xp54Pattern := LoadPattern("XP54.txt")
     global m11Pattern
     global lewisgunPattern := LoadPattern("LGUN.txt")
@@ -85,10 +85,8 @@ ToRadians(num)
     lMax := currentPattern.MaxIndex()
 
     Loop {
-        If (!GetKeyState("LButton", "P") || A_Index > (lmax)) {
-            DllCall("mouse_event", int, 4, int, 0, int, 0, int, 0, int, 0)
+        If (!GetKeyState("LButton", "P") || A_Index > (lmax))
             Return
-        }
 
         patternStr := currentPattern[A_Index]
         pattern := StrSplit(patternStr,", ")
@@ -102,7 +100,6 @@ ToRadians(num)
         yDot := Round(yDeg/yaw)
 
         Move(xDot, yDot)
-
         Sleep, interval
     }
     Return
@@ -136,6 +133,14 @@ ToRadians(num)
     currentPattern := lewisgunPattern
     interval := 118
     Speak("Lewis gun selected")
+    Return
+}
+
+~$*F5::
+{
+    currentPattern := fcarPattern
+    interval := 111
+    Speak("F-CAR selected")
     Return
 }
 

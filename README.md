@@ -10,6 +10,7 @@ TTS should tell you what is selected
 - F2 - AKM
 - F3 - XP-54
 - F4 - Lewis gun
+- F5 - FCAR
 - End - Closes Program\
 ![](https://i.imgur.com/5GRSgry.png) 
 > Still got other guns to add and patterns could be improved (especially for Lewis gun)
