@@ -12,7 +12,7 @@ TTS should tell you what is selected
 - F4 - Lewis gun
 - F5 - FCAR
 - End - Closes Program\
-![](https://i.imgur.com/5GRSgry.png) 
+![](https://i.imgur.com/vLAPXMd.png)
 > Still got other guns to add and patterns could be improved (especially for Lewis gun)
 ## Credit
 Took inspiration from [mgsweet Apex-NoRecoil script](https://github.com/mgsweet/Apex-NoRecoil-2021).\
