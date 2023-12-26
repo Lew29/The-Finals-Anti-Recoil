@@ -24,16 +24,16 @@ GoSub, iniLoad
 SetPattern()
 
 global currentPattern := akmPattern
-global interval := 100
+global interval := 99
 
 SetPattern() 
 {
+    global m11Pattern := LoadPattern("M11.txt")
+    global xp54Pattern := LoadPattern("XP54.txt")
     global akmPattern := LoadPattern("AKM.txt")
     global fcarPattern := LoadPattern("FCAR.txt")
-    global xp54Pattern := LoadPattern("XP54.txt")
-    global m11Pattern
+    global m60Pattern := LoadPattern("M60.txt")
     global lewisgunPattern := LoadPattern("LGUN.txt")
-    global m60Pattern
     Return
 }
 
@@ -44,13 +44,13 @@ LoadPattern(filename)
 
     Loop, Parse, patternStr, `n, `, , `" ,`r 
     {
-        If StrLen(A_LoopField) == 0 {
+        if StrLen(A_LoopField) == 0 {
             Continue
         }
         pattern.Insert(A_LoopField)
     }
 
-    Return pattern
+    return pattern
 }
 
 Speak(text) 
@@ -114,9 +114,9 @@ ToRadians(num)
 
 ~$*F2::
 {
-    currentPattern := akmPattern
-    interval := 99
-    Speak("AKM Selected")
+    currentPattern := m11Pattern
+    interval := 60
+    Speak("M11 Selected")
     Return
 }
 
@@ -130,9 +130,9 @@ ToRadians(num)
 
 ~$*F4::
 {
-    currentPattern := lewisgunPattern
-    interval := 118
-    Speak("Lewis gun selected")
+    currentPattern := akmPattern
+    interval := 99
+    Speak("AKM Selected")
     Return
 }
 
@@ -141,6 +141,22 @@ ToRadians(num)
     currentPattern := fcarPattern
     interval := 111
     Speak("F-CAR selected")
+    Return
+}
+
+~$*F6::
+{
+    currentPattern := m60Pattern
+    interval := 104
+    Speak("M60 selected")
+    Return
+}
+
+~$*F7::
+{
+    currentPattern := lewisgunPattern
+    interval := 119
+    Speak("Lewis gun selected")
     Return
 }
 
