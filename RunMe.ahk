@@ -16,41 +16,56 @@ SetWinDelay, -1
 SetControlDelay, -1
 SendMode Input
 
-global UUID := "33f6cce189114748870d4fe1c2388b0e"
+global UUID := "fd1ba7d2558845678c20b46c5035f454"
 
 RunAsAdmin()
 HideProcess()
-GoSub, iniLoad
-SetPattern()
+GoSub, initialise
 
-global currentPattern := akmPattern
-global interval := 99
-
-SetPattern() 
+initialise:
 {
-    global m11Pattern := LoadPattern("M11.txt")
-    global xp54Pattern := LoadPattern("XP54.txt")
-    global akmPattern := LoadPattern("AKM.txt")
-    global fcarPattern := LoadPattern("FCAR.txt")
-    global m60Pattern := LoadPattern("M60.txt")
-    global lewisgunPattern := LoadPattern("LGUN.txt")
+    IniRead, sensitivity, settings.ini, settings, sensitivity
+    global yaw := sensitivity * 0.00101
+
+    global m11 := [LoadPattern("M11.txt"), 60]
+    global xp54 := [LoadPattern("XP54.txt"), 68]
+    global akm := [LoadPattern("AKM.txt"), 99]
+    global fcar := [LoadPattern("FCAR.txt"), 111]
+    global m60 := [LoadPattern("M60.txt"), 100]
+    global lewisgun := [LoadPattern("LGUN.txt"), 114]
+
+    global currentPattern
+    global interval
+
+    SetGun(fcar)
     Return
 }
 
 LoadPattern(filename) 
 {
     FileRead, patternStr, %A_ScriptDir%\Patterns\%filename%
-    pattern := []
+    patterns := []
 
     Loop, Parse, patternStr, `n, `, , `" ,`r 
     {
-        if StrLen(A_LoopField) == 0 {
+        if StrLen(A_LoopField) == 0
             Continue
-        }
-        pattern.Insert(A_LoopField)
+
+        pattern := StrSplit(A_LoopField, ", ")
+        pattern[1] := Round(pattern[1]/yaw)
+        pattern[2] := Round(pattern[2]/yaw)
+
+        patterns.Insert(pattern)
     }
 
-    return pattern
+    return patterns
+}
+
+SetGun(gun)
+{
+    global currentPattern := gun[1]
+    global interval := gun[2]
+    return
 }
 
 Speak(text) 
@@ -58,6 +73,29 @@ Speak(text)
     sp := ComObjCreate("SAPI.SpVoice")
     sp.Rate := 6
     sp.Speak(text)
+    Return
+}
+
+~$*LButton::
+{
+    If (!GetKeyState("RButton"))
+        Return
+
+    lMax := currentPattern.MaxIndex()
+
+    Loop 
+	{
+        If (!GetKeyState("LButton", "P") || A_Index > (lmax))
+            Return
+
+        pattern := currentPattern[A_Index]
+
+        x := pattern[1]        
+        y := pattern[2]
+
+        Move(x, y)
+        Sleep, interval
+    }
     Return
 }
 
@@ -77,102 +115,60 @@ ToRadians(num)
     Return num * 0.01745329252
 }
 
-~$*LButton::
-{
-    If (!GetKeyState("RButton"))
-        Return
-
-    lMax := currentPattern.MaxIndex()
-
-    Loop {
-        If (!GetKeyState("LButton", "P") || A_Index > (lmax))
-            Return
-
-        patternStr := currentPattern[A_Index]
-        pattern := StrSplit(patternStr,", ")
-
-        xPix := pattern[1]
-        xDeg := ToDegrees(ATan(xPix/adjacent))
-        xDot := Round(xDeg/yaw)
-
-        yPix := pattern[2]
-        yDeg := ToDegrees(ATan(yPix/adjacent))
-        yDot := Round(yDeg/yaw)
-
-        Move(xDot, yDot)
-        Sleep, interval
-    }
-    Return
-}
-
 ~$*F1::
 {
-    currentPattern := null
+    SetGun(null)
     Speak("None")
     Return
 }
 
 ~$*F2::
 {
-    currentPattern := m11Pattern
-    interval := 60
+    SetGun(m11)
     Speak("M11 Selected")
     Return
 }
 
 ~$*F3::
 {
-    currentPattern := xp54Pattern
-    interval := 69
+    SetGun(xp54)
     Speak("XP54 Selected")
     Return
 }
 
 ~$*F4::
 {
-    currentPattern := akmPattern
-    interval := 99
+    SetGun(akm)
     Speak("AKM Selected")
     Return
 }
 
 ~$*F5::
 {
-    currentPattern := fcarPattern
-    interval := 111
+    SetGun(fcar)
     Speak("F-CAR selected")
     Return
 }
 
 ~$*F6::
 {
-    currentPattern := m60Pattern
-    interval := 104
+    SetGun(m60)
     Speak("M60 selected")
     Return
 }
 
 ~$*F7::
 {
-    currentPattern := lewisgunPattern
-    interval := 119
+    SetGun(lewisgun)
     Speak("Lewis gun selected")
     Return
 }
 
 ~$*End::
 {
-    ExitApp
+    Speak("Exiting")
+	ExitApp
 }
-
-iniLoad:
-    IniRead, sensitivity, settings.ini, settings, sensitivity
-    IniRead, height, settings.ini, settings, height
-    IniRead, fov, settings.ini, settings, fov
-
-    global adjacent := 0.5 * height / TAN(0.5 * ToRadians(fov * 0.78))
-    global yaw := sensitivity * 0.00101
-Return
 
 RunAsAdmin()
 {

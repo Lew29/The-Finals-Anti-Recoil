@@ -2,7 +2,7 @@
 **Maybe detected wouldn't run on main account.**\
 [UnknownCheats thread](https://www.unknowncheats.me/forum/other-fps-games/616379-finals-ahk-anti-recoil.html).
 ## How to run
-Open the "settings.ini" file using Notepad and set your sensitivity and FOV settings.\
+Open the "settings.ini" file using Notepad and set your sensitivity.\
 Run "RunMe.ahk"\
 **Make sure to turn "Mouse Focal Length Sensitivity Scaling" off.**\
 ![](https://i.imgur.com/Os7T18d.png)
