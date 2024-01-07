@@ -16,12 +16,6 @@ SetWinDelay, -1
 SetControlDelay, -1
 SendMode Input
 
-global UUID := "fd1ba7d2558845678c20b46c5035f454"
-
-RunAsAdmin()
-HideProcess()
-GoSub, initialise
-
 initialise:
 {
     IniRead, sensitivity, settings.ini, settings, sensitivity
@@ -168,43 +162,4 @@ ToRadians(num)
 {
     Speak("Exiting")
 	ExitApp
-}
-
-RunAsAdmin()
-{
-    Global 0
-    IfEqual, A_IsAdmin, 1, Return 0
-    Loop, %0%
-        params .= A_Space . %A_Index%
-        DllCall("shell32\ShellExecute" (A_IsUnicode ? "":"A"),uint,0,str,"RunAs",str,(A_IsCompiled ? A_ScriptFullPath : A_AhkPath),str,(A_IsCompiled ? "": """" . A_ScriptFullPath . """" . A_Space) params,str,A_WorkingDir,int,1)
-    ExitApp
-}
-
-HideProcess() 
-{
-    If ((A_Is64bitOS=1) && (A_PtrSize!=4))
-        hMod := DllCall("LoadLibrary", Str, "hyde64.dll", Ptr)
-    Else If ((A_Is32bitOS=1) && (A_PtrSize=4))
-        hMod := DllCall("LoadLibrary", Str, "hyde.dll", Ptr)
-    Else
-    {
-        MsgBox, Mixed Versions detected!`nOS Version and AHK Version need to be the same (x86 & AHK32 or x64 & AHK64).`n`nScript will now terminate!
-        ExitApp
-    }
-
-    If (hMod)
-    {
-        hHook := DllCall("SetWindowsHookEx", Int, 5, Ptr, DllCall("GetProcAddress", Ptr, hMod, AStr, "CBProc", ptr), Ptr, hMod, Ptr, 0, Ptr)
-        If (!hHook)
-        {
-            MsgBox, SetWindowsHookEx failed!`nScript will now terminate!
-            ExitApp
-        }
-    }
-    Else
-    {
-        MsgBox, LoadLibrary failed!`nScript will now terminate!
-        ExitApp
-    }
-    Return
 }
